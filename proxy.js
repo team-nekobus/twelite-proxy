@@ -5,14 +5,13 @@ var path = require('path')
 var TWE_LITE_MESSAGE_LENGTH = 50;
 var portName = '/dev/ttyUSB0';
 var connections = [];
-var sp;
-
+var serial;
 
 if (process.argv.length >= 3 && process.argv[2].indexOf('/dev/tty') === 0) {
 	portName = process.argv[2];
 }
 
-var server = net.createServer(function(conn) { //'connection' listener
+var server = net.createServer(function(conn) { // new connection handler
   console.log('connected');
   connections.push(conn);
   conn.on('end', function() {
@@ -21,9 +20,9 @@ var server = net.createServer(function(conn) { //'connection' listener
   });
 });
 
-server.listen(9943, function() { //'listening' listener
+server.listen(9943, function() {	// listen handler
   console.log('server bound');
-  connectSerial(portName);
+  connectSerial(portName); // connect serial
 });
 
 function connectSerial(serialDevice) {
@@ -36,10 +35,11 @@ function connectSerial(serialDevice) {
 	  flowControl: false,
 	  parser: serialport.parsers.readline("\n")
 	};
-	sp = new serialport.SerialPort(serialDevice, config); 
-	sp.on('data', ondata);
-	sp.on('error', function(e) {
+	serial = new serialport.SerialPort(serialDevice, config); 
+	serial.on('data', ondata);
+	serial.on('error', function(e) {
 		console.error(e);
+		// loop until it's conected
 		setTimeout(connectSerial.bind(undefined, serialDevice), 1000);
 	});
 }
@@ -57,4 +57,3 @@ function ondata(data) {
   	});
   }
 }
-
