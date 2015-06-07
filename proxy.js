@@ -28,7 +28,7 @@ server.listen(9943, function() {	// listen handler
 function connectSerial(serialDevice) {
 	console.log('serial port: ', serialDevice);
 	var config = {
-	  baudRate: 115200,
+	  baudRate: 9600,
 	  dataBits: 8,
 	  parity: 'none',
 	  stopBits: 1,
